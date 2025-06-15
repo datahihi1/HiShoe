@@ -32,7 +32,7 @@ class ProductVariantController extends Controller
         $product = Products::findOrFail($product_id);
         $sizes = Size::all();
         $colors = Color::all();
-        return view('admin.products_variant.create', compact('product_id', 'sizes', 'colors','product'));
+        return view('admin.products_variant.create', compact('product_id', 'sizes', 'colors', 'product'));
     }
 
     /**
@@ -107,7 +107,7 @@ class ProductVariantController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $product_id, string $id )
+    public function update(Request $request, string $product_id, string $id)
     {
         $request->validate([
             'stock_quantity' => 'required|integer',

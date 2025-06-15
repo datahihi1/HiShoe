@@ -4,8 +4,6 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Products;
-use App\Models\Category;
-use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\storage;
@@ -16,7 +14,8 @@ class ProductController extends Controller
 {
     private $view;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->view = [];
     }
     public function index(Request $request)
@@ -26,16 +25,16 @@ class ProductController extends Controller
         $brands = DB::table('brands')->get();
         $categories = DB::table('categories')->get();
         $products = Products::query()
-        ->when($search, function ($query) use ($search) {
-            return $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('description', 'like', "%{$search}%")
-                      ->orWhere('price', 'like', "%{$search}%");
-            });
-        })
-        ->with('category')
-        ->with('brand')
-        ->get();
+            ->when($search, function ($query) use ($search) {
+                return $query->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhere('price', 'like', "%{$search}%");
+                });
+            })
+            ->with('category')
+            ->with('brand')
+            ->get();
 
         // Đồng bộ số lượng và trạng thái cho từng sản phẩm
         foreach ($products as $product) {
@@ -48,16 +47,16 @@ class ProductController extends Controller
     public function search(Request $request)
     {
         $search = $request->search;
-        $products = Products::where(function($query) use ($search){
-            $query->where('name','like',"%$search%")
-            ->orWhere('description','like',"%$search%")
-            ->orWhere('price','like',"%$search%");
+        $products = Products::where(function ($query) use ($search) {
+            $query->where('name', 'like', "%$search%")
+                ->orWhere('description', 'like', "%$search%")
+                ->orWhere('price', 'like', "%$search%");
         })
-        ->orWhereHas('brands',function($query) use ($search){
-            $query->where('brand_id','like',"%$search%");
-        })
-        ->get();
-        return view("admin.products.list", compact("products","search"));
+            ->orWhereHas('brands', function ($query) use ($search) {
+                $query->where('brand_id', 'like', "%$search%");
+            })
+            ->get();
+        return view("admin.products.list", compact("products", "search"));
     }
 
     /**
@@ -169,7 +168,7 @@ class ProductController extends Controller
             // Tính tổng số lượng từ biến thể
             $totalStock = 0;
             foreach ($request->variants as $variant) {
-                $totalStock += (int)($variant['stock_quantity'] ?? 0);
+                $totalStock += (int) ($variant['stock_quantity'] ?? 0);
             }
 
             $product = Products::create([
@@ -234,7 +233,7 @@ class ProductController extends Controller
         $categories = DB::table('categories')->get();
         $product = Products::find($id);
         // dd($product);
-        return view('admin.products.edit', compact('product','categories','brands'));
+        return view('admin.products.edit', compact('product', 'categories', 'brands'));
     }
 
     /**
@@ -243,13 +242,13 @@ class ProductController extends Controller
     public function updateProduct(Request $request, string $id)
     {
         $validate = $request->validate([
-            'name'=> 'required',
+            'name' => 'required',
             'description' => 'required',
-            'price'=> 'required',
-            'stock_quantity'=>'required',
-            'category_id'=>'required',
-            'brand_id'=>'required',
-            'image_url'=>'nullable',
+            'price' => 'required',
+            'stock_quantity' => 'required',
+            'category_id' => 'required',
+            'brand_id' => 'required',
+            'image_url' => 'nullable',
         ], [
             'name.required' => 'Tên sản phẩm là bắt buộc.',
             'description.required' => 'Mô tả sản phẩm là bắt buộc.',
@@ -261,23 +260,23 @@ class ProductController extends Controller
 
         $product = Products::find($id);
 
-        if($request->hasFile('image_url')){
+        if ($request->hasFile('image_url')) {
             if ($product->image_url && Storage::disk('public')->exists($product->image_url)) {
                 Storage::disk('public')->delete($product->image_url);
             }
-            $part = $request->file('image_url')->store('uploads/image_url','public');
-        }else{
+            $part = $request->file('image_url')->store('uploads/image_url', 'public');
+        } else {
             $part = $product->image_url;
         }
 
         $product->update([
-            'name'=>$validate['name'],
-            'description'=>$validate['description'],
-            'price'=>$validate['price'],
-            'stock_quantity'=>$validate['stock_quantity'],
-            'category_id'=>$validate['category_id'],
-            'brand_id'=>$validate['brand_id'],
-            'image_url'=>$part,
+            'name' => $validate['name'],
+            'description' => $validate['description'],
+            'price' => $validate['price'],
+            'stock_quantity' => $validate['stock_quantity'],
+            'category_id' => $validate['category_id'],
+            'brand_id' => $validate['brand_id'],
+            'image_url' => $part,
         ]);
         return redirect()->route('products.list')->with('success', 'Cập nhật sản phẩm thành công!');
     }

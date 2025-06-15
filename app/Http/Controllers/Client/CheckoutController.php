@@ -111,7 +111,8 @@ class CheckoutController extends Controller
         } else {
             $sessionCart = Session::get('cart', []);
             foreach ($sessionCart as $item) {
-                if (!empty($cartIds) && !in_array($item['id'], $cartIds)) continue;
+                if (!empty($cartIds) && !in_array($item['id'], $cartIds))
+                    continue;
                 $productVariant = Product_variant::find($item['product_variant_id']);
                 if ($productVariant) {
                     $subtotal += $productVariant->price * $item['quantity'];
@@ -235,7 +236,8 @@ class CheckoutController extends Controller
         } else {
             $sessionCart = Session::get('cart', []);
             foreach ($sessionCart as $item) {
-                if (!empty($cartIds) && !in_array($item['id'], $cartIds)) continue;
+                if (!empty($cartIds) && !in_array($item['id'], $cartIds))
+                    continue;
                 $productVariant = Product_variant::find($item['product_variant_id']);
                 if ($productVariant) {
                     $subtotal += $productVariant->price * $item['quantity'];

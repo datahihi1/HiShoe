@@ -89,19 +89,6 @@ Route::middleware(['auth:admin', 'admin'])->prefix('admin/orders')->group(functi
     Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.delete');
 });
 
-// Route::middleware(['auth:admin', 'admin'])->controller(BrandController::class)
-//     ->prefix('admin/colors')
-//     ->name('colors.')
-//     ->group(function () {
-//         Route::get('/', 'index')->name('');
-//         Route::get('/create', 'create')->name('create');
-//         Route::post('/', 'store')->name('store');
-//         Route::get('/{brand}/edit', 'edit')->name('edit');
-//         Route::put('/{brand}', 'update')->name('update');
-//         Route::put('/{brand}/toggle', 'toggleStatus')->name('toggle');
-// });
-
-
 Route::middleware(['auth:admin', 'admin'])->resource('admin/sizes', SizeController::class);
 Route::middleware(['auth:admin', 'admin'])->resource('admin/colors', ColorController::class);
 Route::middleware(['auth:admin', 'admin'])->put('/colors/{id}', [ColorController::class, 'update'])->name('colors.update');

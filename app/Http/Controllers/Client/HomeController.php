@@ -9,10 +9,10 @@ class HomeController extends Controller
 {
     public function home()
     {
-        $products = Products::whereHas('category', function($q) {
-                $q->where('status', 0);
-            })
-            ->whereHas('brand', function($q) {
+        $products = Products::whereHas('category', function ($q) {
+            $q->where('status', 0);
+        })
+            ->whereHas('brand', function ($q) {
                 $q->where('status', 1);
             })
             ->get();
@@ -22,7 +22,7 @@ class HomeController extends Controller
 
     public function test()
     {
-        if(!Auth::guard('web')->check()){
+        if (!Auth::guard('web')->check()) {
             return redirect()->route('loginForm')->with('error', 'Chức năng này yêu cầu đăng nhập.');
         }
         return view('client.pages.user.add_address');

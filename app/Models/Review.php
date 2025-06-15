@@ -13,10 +13,10 @@ class Review extends Model
     // Fillable fields
     protected $fillable = [
         'user_id',
-        'order_id', 
-        'product_id', 
-        'rating', 
-        'comment', 
+        'order_id',
+        'product_id',
+        'rating',
+        'comment',
         'status'
     ];
 
@@ -51,7 +51,7 @@ class Review extends Model
     // Accessors
     public function getStatusNameAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             self::STATUS_PENDING => 'Pending',
             self::STATUS_APPROVED => 'Approved',
             self::STATUS_REJECTED => 'Rejected',

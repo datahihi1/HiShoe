@@ -28,7 +28,7 @@ class AuthController extends Controller
         if ($request->isMethod('post')) {
             $validate = $request->validate([
                 'password' => [
-                    'required', 
+                    'required',
                     'regex:/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,20}$/'
                 ],
                 'password_confirmation' => 'required|same:password',
@@ -89,11 +89,11 @@ class AuthController extends Controller
             'username.required' => 'Vui lòng nhập tên đăng nhập hoặc email.',
             'password.required' => 'Vui lòng nhập mật khẩu.',
         ]);
-    
+
         $credentials = filter_var($validate['username'], FILTER_VALIDATE_EMAIL)
             ? ['email' => $validate['username'], 'password' => $validate['password']]
             : ['username' => $validate['username'], 'password' => $validate['password']];
-    
+
         if (Auth::guard('web')->attempt($credentials)) {
             $user = Auth::guard('web')->user();
             if ($user->status == 1) {
@@ -106,7 +106,7 @@ class AuthController extends Controller
             }
             return redirect()->route('home');
         }
-    
+
         session()->flash('error', 'Sai thông tin đăng nhập!');
         return redirect()->route('loginForm');
     }
@@ -146,23 +146,23 @@ class AuthController extends Controller
         ], [
             'password.regex' => 'Mật khẩu phải từ 8-20 ký tự, không có ký tự đặc biệt, ít nhất 1 chữ in hoa và 1 số.',
         ]);
-    
+
         $identifier = $request->input('email_or_phone');
         $otp = $request->input('otp');
-    
+
         $user = filter_var($identifier, FILTER_VALIDATE_EMAIL)
             ? User::where('email', $identifier)->first()
             : User::where('phone_number', $identifier)->first();
-    
+
         if (!$user || $user->otp != $otp) {
             return back()->withErrors(['otp' => 'Mã OTP không hợp lệ.']);
         }
-    
+
         $user->update([
             'password' => bcrypt($request->input('password')),
             'otp' => null, // Xóa OTP sau khi sử dụng
         ]);
-    
+
         return redirect()->route('loginForm')->with('status', 'Đặt lại mật khẩu thành công!');
     }
     protected function validateEmail(Request $request)

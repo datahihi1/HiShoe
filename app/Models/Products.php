@@ -82,10 +82,12 @@ class Products extends Model
         $this->status = ($total == 0) ? 1 : 0; // 1: Hết hàng, 0: Còn hàng
         $this->save();
     }
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo(Category::class, 'category_id');
     }
-    public function brand() {
+    public function brand()
+    {
         return $this->belongsTo(Brand::class, 'brand_id');
     }
 

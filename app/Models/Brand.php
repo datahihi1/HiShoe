@@ -11,10 +11,9 @@ class Brand extends Model
 {
     use HasFactory;
 
-    // Fillable fields
     protected $fillable = [
-        'name', 
-        'description', 
+        'name',
+        'description',
         'status'
     ];
 
@@ -36,7 +35,7 @@ class Brand extends Model
     // Accessors
     public function getStatusNameAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             self::STATUS_ACTIVE => 'Active',
             self::STATUS_INACTIVE => 'Inactive',
             default => 'Unknown'

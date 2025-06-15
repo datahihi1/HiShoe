@@ -28,10 +28,10 @@ class Voucher extends Model
         'end_date'
     ];
 
-    // Status constants
     const STATUS_ACTIVE = 1;
     const STATUS_INACTIVE = 0;
-    const STATUS_EXPIRED = 2; // Thêm trạng thái hết hạn
+    const STATUS_EXPIRED = 2;
+    const STATUS_FUTURE = 3;
 
     // Relationships
     public function orders(): HasMany
@@ -43,16 +43,16 @@ class Voucher extends Model
     public function scopeActive($query)
     {
         return $query->where('status', self::STATUS_ACTIVE)
-                     ->where('start_date', '<=', now())
-                     ->where('end_date', '>=', now());
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now());
     }
 
     // Check if voucher is valid
     public function isValid(): bool
     {
         return $this->status == self::STATUS_ACTIVE
-               && now()->between($this->start_date, $this->end_date)
-               && ($this->usage_limit === null || $this->used_count < $this->usage_limit);
+            && now()->between($this->start_date, $this->end_date)
+            && ($this->usage_limit === null || $this->used_count < $this->usage_limit);
     }
 
     // Check if voucher is expired

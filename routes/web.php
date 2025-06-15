@@ -38,7 +38,6 @@ Route::controller(ProductController::class)
     Route::get('/category/{category_id}',[ProductController::class,'category'])->name('category');
     Route::get('/brand/{brand_id}',[ProductController::class,'brand'])->name('brand');
 });
-// Route::get('/api/get-variant-price', [ProductController::class, 'getVariantPrice']);
 
 Route::controller(AuthController::class)
 ->prefix('')
