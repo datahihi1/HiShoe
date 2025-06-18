@@ -139,6 +139,7 @@ Route::prefix('checkout')->group(function(){
     Route::get('/index', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/process', [CheckoutController::class, 'process'])->name('checkout.process');
     Route::get('/success', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::get('/failed', [CheckoutController::class, 'failure'])->name('checkout.failed');
     Route::post('/apply-voucher', [CheckoutController::class, 'applyVoucher'])->name('apply.voucher');
     Route::post('/remove-voucher', [CheckoutController::class, 'removeVoucher'])->name('remove.voucher');
 });
