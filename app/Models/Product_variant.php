@@ -19,7 +19,7 @@ class Product_variant extends Model
         'stock_quantity',
         'image_url',
     ];
-    public $timestamps = true; // Bật timestamps
+    public $timestamps = true;
 
     protected $casts = [
         'created_at' => 'datetime',

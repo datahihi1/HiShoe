@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class Brand extends Model
@@ -17,22 +16,22 @@ class Brand extends Model
         'status'
     ];
 
-    // Status constants
-    const STATUS_INACTIVE = 0;
-    const STATUS_ACTIVE = 1;
+    public const STATUS_INACTIVE = 0;
+    public const STATUS_ACTIVE = 1;
 
-    // Casts for type handling
     protected $casts = [
         'status' => 'integer'
     ];
-
-    // Scopes
+    /**
+     * Scope a query to only include active brands.
+     */
     public function scopeActive($query)
     {
         return $query->where('status', self::STATUS_ACTIVE);
     }
-
-    // Accessors
+    /**
+     * Get the human-readable status name of the brand.
+     */
     public function getStatusNameAttribute(): string
     {
         return match ($this->status) {
@@ -41,36 +40,45 @@ class Brand extends Model
             default => 'Unknown'
         };
     }
-
-    // Generate a URL-friendly slug
+    /**
+     * Get the slug for the brand.
+     */
     public function getSlugAttribute(): string
     {
         return Str::slug($this->name);
     }
-
-    // Check if brand is active
+    /**
+     * Check if the brand is active.
+     */
     public function isActive(): bool
     {
         return $this->status === self::STATUS_ACTIVE;
     }
-
-    // Method to activate brand
+    /**
+     * Activate the brand and set its status to active.
+     */
     public function activate()
     {
         $this->status = self::STATUS_ACTIVE;
         $this->save();
         return $this;
     }
-
-    // Method to deactivate brand
+    /**
+     * Deactivate the brand and set its status to inactive.
+     */
     public function deactivate()
     {
         $this->status = self::STATUS_INACTIVE;
         $this->save();
         return $this;
     }
-
-    // Static method to find or create brand
+    /**
+     * Find or create a brand by name.
+     *
+     * @param string $name The name of the brand to find or create.
+     * @param array $additionalData Additional data to merge with the default values.
+     * @return Brand
+     */
     public static function findOrCreateByName(string $name, array $additionalData = [])
     {
         return self::firstOrCreate(

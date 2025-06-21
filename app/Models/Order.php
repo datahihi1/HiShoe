@@ -191,9 +191,7 @@ class Order extends Model
     // Recalculate total price with voucher consideration
     public function recalculateTotalPrice()
     {
-        $total = $this->orderDetails->sum(function ($detail) {
-            return $detail->quantity * $detail->price;
-        });
+        $total = $this->orderDetails->reduce(fn($carry, $detail) => $carry + $detail->quantity * $detail->price, 0);
 
         // Apply voucher discount if exists
         if ($this->voucher && $this->voucher->exists) {

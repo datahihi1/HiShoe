@@ -12,6 +12,10 @@ use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\AuthController;
 use App\Http\Controllers\admin\BrandController;
 use App\Http\Controllers\admin\OrderController;
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\Admin;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -134,3 +138,28 @@ Route::middleware(['auth:admin', 'admin'])->controller(VoucherController::class)
 Route::post('admin/products/{id}/hide', [ProductController::class, 'hide'])->name('products.hide');
 Route::get('admin/products/hidden', [ProductController::class, 'hidden'])->name('products.hidden');
 Route::post('admin/products/{id}/restore', [ProductController::class, 'restore'])->name('products.restore');
+
+
+Route::get('/auth/redirect/google', function () {
+    return Socialite::driver('google')->redirect();
+})->name('admin.auth.redirect.google');
+
+Route::get('/auth/callback/google', function () {
+    $googleUser = Socialite::driver('google')->user();
+
+    $admin = Admin::where('email', $googleUser->getEmail())->first();
+
+    if ($admin) {
+        // Nếu đã có admin, cập nhật google_id nếu chưa có
+        if (!$admin->google_id) {
+            $admin->google_id = $googleUser->getId();
+            $admin->save();
+        }
+        Auth::guard('admin')->login($admin);
+    } else {
+        // Nếu không có admin, báo lỗi
+        return redirect('/admin/login-form')->with('error',  "Can't login with Google. Please contact the administrator.");
+    }
+
+    return redirect('/admin/dashboard')->with('success', 'Logged in successfully with Google.');
+})->name('admin.auth.callback.google');

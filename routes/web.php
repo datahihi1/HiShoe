@@ -145,3 +145,4 @@ Route::prefix('checkout')->group(function(){
 });
 
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+
