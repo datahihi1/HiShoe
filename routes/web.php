@@ -47,6 +47,8 @@ Route::controller(AuthController::class)
     Route::get('/register-form', [AuthController::class, 'registerForm'])->name('registerForm');
     Route::post('/register', [AuthController::class, 'register'])->name('register');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/login/google', [AuthController::class, 'redirectToGoogle'])->name('login.google');
+    Route::get('/login/google/callback', [AuthController::class, 'handleGoogleCallback']);
 });
 
 Route::controller(AuthController::class)
@@ -145,4 +147,3 @@ Route::prefix('checkout')->group(function(){
 });
 
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
-

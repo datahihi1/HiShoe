@@ -77,11 +77,13 @@ class VoucherController extends Controller
     }
     public function delete($id)
     {
-        $voucher = voucher::find($id);
+        $voucher = Voucher::find($id);
 
         if (!$voucher) {
             return redirect()->back()->with('error', 'Mã không tồn tại.');
         }
+
+        \DB::table('voucher_usages')->where('voucher_id', $voucher->id)->delete();
 
         $voucher->delete();
 
@@ -90,6 +92,14 @@ class VoucherController extends Controller
 
     public function deleteExpired()
     {
+
+        // Lấy danh sách id các voucher hết hạn
+        $expiredVoucherIds = Voucher::where('end_date', '<', now())->pluck('id');
+
+        // Xóa các usage liên quan trước
+        \DB::table('voucher_usages')->whereIn('voucher_id', $expiredVoucherIds)->delete();
+
+        // Xóa các voucher hết hạn
         $deleted = Voucher::where('end_date', '<', now())->delete();
         return redirect()->route('vouchers.list')->with('success', "Đã xóa $deleted mã giảm giá hết hạn!");
     }

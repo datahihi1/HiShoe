@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rule;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -274,6 +275,37 @@ class AuthController extends Controller
             } catch (\Exception $e) {
                 return back()->withErrors(['identifier' => 'Không thể gửi OTP. Vui lòng thử lại sau.']);
             }
+        }
+    }
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->stateless()->user();
+
+            $user = User::where('email', $googleUser->getEmail())->first();
+
+            if (!$user) {
+                $user = User::create([
+                    'username' => explode('@', $googleUser->getEmail())[0],
+                    'full_name' => $googleUser->getName(),
+                    'email' => $googleUser->getEmail(),
+                    'password' => bcrypt(uniqid()), // random password
+                    'role' => 0,
+                    'status' => 0,
+                ]);
+            }
+
+            Auth::guard('web')->login($user);
+
+            return redirect()->route('home');
+        } catch (\Exception $e) {
+            return redirect()->route('loginForm')->with('error', 'Đăng nhập Google thất bại!');
         }
     }
 }

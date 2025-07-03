@@ -32,7 +32,7 @@ Route::controller(AuthController::class)
     ->name('admin.')
     ->prefix('admin/')
     ->group(function () {
-        Route::get('', [AuthController::class, 'index'])->name('index');
+        Route::get('/', [AuthController::class, 'index'])->name('index');
         Route::get('/login-form', [AuthController::class, 'loginForm'])->name('loginForm');
         Route::post('/login', [AuthController::class, 'login'])->name('login');
         Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -140,12 +140,10 @@ Route::get('admin/products/hidden', [ProductController::class, 'hidden'])->name(
 Route::post('admin/products/{id}/restore', [ProductController::class, 'restore'])->name('products.restore');
 
 
-Route::get('/auth/redirect/google', function () {
-    return Socialite::driver('google')->redirect();
-})->name('admin.auth.redirect.google');
+Route::get('/auth/redirect/google', fn() => Socialite::driver('google')->redirect())->name('admin.auth.redirect.google');
 
 Route::get('/auth/callback/google', function () {
-    $googleUser = Socialite::driver('google')->user();
+    $googleUser = Socialite::driver('google')->stateless()->user();
 
     $admin = Admin::where('email', $googleUser->getEmail())->first();
 
@@ -158,8 +156,8 @@ Route::get('/auth/callback/google', function () {
         Auth::guard('admin')->login($admin);
     } else {
         // Nếu không có admin, báo lỗi
-        return redirect('/admin/login-form')->with('error',  "Can't login with Google. Please contact the administrator.");
+        return redirect('/admin/login-form')->with('error',  "Tài khoản không thể đăng nhập khu vực này. Vui lòng liên hệ quản trị viên.");
     }
 
-    return redirect('/admin/dashboard')->with('success', 'Logged in successfully with Google.');
+    return redirect('/admin/dashboard')->with('success', 'Đăng nhập thành công với Google!');
 })->name('admin.auth.callback.google');

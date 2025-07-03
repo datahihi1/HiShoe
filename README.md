@@ -1,6 +1,6 @@
 # HiShoe Store
 
-HiShoe Store là dự án website bán giày thể thao, xây dựng bằng Laravel 10.
+HiShoe Store là dự án website bán giày thể thao, xây dựng bằng Laravel 12.
 
 ## Tính năng chính
 
@@ -12,14 +12,14 @@ HiShoe Store là dự án website bán giày thể thao, xây dựng bằng Lara
 
 ## Công nghệ sử dụng
 
-- [Laravel 10](https://laravel.com/)
+- [Laravel 12](https://laravel.com/)
 - Bootstrap 4
 - MySQL
 
 ## Yêu cầu hệ thống
 
 - Apache 2.4.x trở lên
-- PHP 8.1.x đến 8.3.x
+- PHP 8.2.x đến 8.4.x
 - mysqli-ext hoặc pdo-mysql-ext
 - MySQL 5.7 hoặc MariaDB 10.3 trở lên
 
